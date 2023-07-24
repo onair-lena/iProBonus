@@ -1,5 +1,7 @@
 {
-  "name": "my-app",
+  "name": "test-assignment",
+  "description": "iProBonus Тестовое задание",
+  "author": "Alena Piachenka",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
