@@ -8,12 +8,15 @@ export function useFetchData<T, P>(asyncFn: (payload: P) => Promise<T>) {
     async (payload: P) => {
       try {
         setIsLoading(true);
-        const result = await asyncFn(payload);
-
-        setData(result);
-        return result;
+        const response = await asyncFn(payload);
+        setData(response);
+        return response;
       } catch (err) {
-        alert('Oops... something went wrong!');
+        if (err instanceof Error) {
+          alert(err.message);
+        } else {
+          alert('Oops... something went wrong!');
+        }
       } finally {
         setIsLoading(false);
       }

@@ -28,7 +28,6 @@ export type TBonusResponse = {
 };
 
 export type TTokenPayload = {
-  url: string;
   accessKey: string;
   idClient: string;
   idDevice: string;
@@ -36,7 +35,6 @@ export type TTokenPayload = {
 };
 
 export type TBonusesPayload = {
-  url: string;
   accessKey: string;
   token: string;
 };

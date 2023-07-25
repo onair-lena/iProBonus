@@ -10,7 +10,6 @@ import {
   TBonusesPayload,
   TTokenPayload,
 } from './utils/types';
-import { API_TOKEN, API_BONUS } from './utils/api';
 import { fetchBonuses, fetchToken } from './utils/requests';
 import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 
@@ -40,7 +39,6 @@ function App() {
     setIsOpen(!isOpen);
     if (data?.accessToken && !isOpen) {
       getBonuses({
-        url: API_BONUS,
         accessKey: REACT_ACCESS_KEY,
         token: data.accessToken,
       });
@@ -49,11 +47,9 @@ function App() {
 
   const { userCoordinates } = useGetUserCoordinates();
 
-  console.log(userCoordinates);
   useEffect(() => {
     if (!data?.accessToken && userCoordinates) {
       getToken({
-        url: API_TOKEN,
         accessKey: REACT_ACCESS_KEY,
         idClient: REACT_CLIENT_ID,
         idDevice: REACT_DEVICE_ID,
@@ -71,7 +67,7 @@ function App() {
       <InfoBox togglePopup={togglePopup} />
       <RectangleBox />
       {isOpen &&
-        (bonuses && !isBonusLoading ? (
+        (bonuses || !isBonusLoading ? (
           <Popup bonusData={bonuses?.data} />
         ) : (
           <PopupSkeleton />
