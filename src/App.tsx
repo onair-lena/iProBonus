@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import InfoBox from './components/InfoBox/InfoBox';
@@ -15,6 +16,7 @@ import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 
 import { useGetUserCoordinates } from './hooks/useGetUserCoordinates';
 import PopupSkeleton from './components/Skeletons/Skeleton';
+import SpeechRecognitionComponent from './components/SpeechRecognitionComponent';
 
 const REACT_ACCESS_KEY = '891cf53c-01fc-4d74-a14c-592668b7a03c';
 const REACT_CLIENT_ID = '2c44d8c2-c89a-472e-aab3-9a8a29142315';
@@ -64,14 +66,17 @@ function App() {
 
   return (
     <div className="app">
-      <InfoBox togglePopup={togglePopup} />
-      <RectangleBox />
-      {isOpen &&
-        (bonuses || !isBonusLoading ? (
-          <Popup bonusData={bonuses?.data} />
-        ) : (
-          <PopupSkeleton />
-        ))}
+      <div className="app-bonus-section">
+        <InfoBox togglePopup={togglePopup} />
+        <RectangleBox />
+        {isOpen &&
+          (bonuses || !isBonusLoading ? (
+            <Popup bonusData={bonuses?.data} />
+          ) : (
+            <PopupSkeleton />
+          ))}
+      </div>
+      <SpeechRecognitionComponent />
     </div>
   );
 }

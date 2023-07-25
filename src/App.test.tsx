@@ -1,8 +1,7 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 import { useFetchData } from './hooks/use-fetch-data';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('./hooks/use-fetch-data');
 
@@ -91,10 +90,12 @@ describe('App', () => {
     });
     render(<App />);
 
-    expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText(/Иконка перехода из попап/i)
+    ).not.toBeInTheDocument();
 
     const toggleButton = screen.getByLabelText(/Кнопка открыть попап/i);
-    await userEvent.click(toggleButton);
+    fireEvent.click(toggleButton);
 
     await waitFor(() => {
       expect(

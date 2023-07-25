@@ -64,16 +64,16 @@ const Popup = ({ bonusData }: TProps) => {
         aria-label="Иконка перехода из попап"
       >
         <circle cx="17.5" cy="17.5" r="17" stroke="#D4343F" />
-        <g clip-path="url(#clip0_1_51)">
+        <g clipPath="url(#clip0_1_51)">
           <path
             d="M15.7716 23.1948L21.2284 17.5"
             stroke="#D4343F"
-            stroke-linecap="round"
+            strokeLinecap="round"
           />
           <path
             d="M15.7716 11.8052L21.2284 17.5"
             stroke="#D4343F"
-            stroke-linecap="round"
+            strokeLinecap="round"
           />
         </g>
         <defs>
