@@ -61,6 +61,7 @@ const Popup = ({ bonusData }: TProps) => {
         viewBox="0 0 35 35"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        aria-label="Иконка перехода из попап"
       >
         <circle cx="17.5" cy="17.5" r="17" stroke="#D4343F" />
         <g clip-path="url(#clip0_1_51)">
