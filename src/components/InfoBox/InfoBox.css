@@ -1,0 +1,14 @@
+.info {
+  height: var(--custom-height);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  color: #000000;
+}
+
+.info-logo,
+.info-button {
+  margin: 0 1.25rem;
+}

@@ -1,130 +1,83 @@
-import React, { useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import InfoBox from './components/InfoBox/InfoBox';
 import RectangleBox from './components/RectangleBox/RectangleBox';
 import Popup from './components/Popup/Popup';
+import { useFetchData } from './hooks/use-fetch-data';
+import {
+  TAccessTokenResponse,
+  TBonusResponse,
+  TBonusesPayload,
+  TTokenPayload,
+} from './utils/types';
+import { API_TOKEN, API_BONUS } from './utils/api';
+import { fetchBonuses, fetchToken } from './utils/requests';
+import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
+
+import { useGetUserCoordinates } from './hooks/useGetUserCoordinates';
+import PopupSkeleton from './components/Skeletons/Skeleton';
+
+const REACT_ACCESS_KEY = '891cf53c-01fc-4d74-a14c-592668b7a03c';
+const REACT_CLIENT_ID = '2c44d8c2-c89a-472e-aab3-9a8a29142315';
+const REACT_DEVICE_ID = '7db72635-fd0a-46b9-813b-1627e3aa02ea';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const {
+    data,
+    isLoading: isTokenLoading,
+    getData: getToken,
+  } = useFetchData<TAccessTokenResponse, TTokenPayload>(fetchToken);
+
+  const {
+    data: bonuses,
+    isLoading: isBonusLoading,
+    getData: getBonuses,
+  } = useFetchData<TBonusResponse, TBonusesPayload>(fetchBonuses);
+
   const togglePopup = () => {
     setIsOpen(!isOpen);
+    if (data?.accessToken && !isOpen) {
+      getBonuses({
+        url: API_BONUS,
+        accessKey: REACT_ACCESS_KEY,
+        token: data.accessToken,
+      });
+    }
   };
+
+  const { userCoordinates } = useGetUserCoordinates();
+
+  console.log(userCoordinates);
+  useEffect(() => {
+    if (!data?.accessToken && userCoordinates) {
+      getToken({
+        url: API_TOKEN,
+        accessKey: REACT_ACCESS_KEY,
+        idClient: REACT_CLIENT_ID,
+        idDevice: REACT_DEVICE_ID,
+        userCoordinates,
+      });
+    }
+  }, [data?.accessToken, getToken, userCoordinates]);
+
+  if (!data && isTokenLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="app">
       <InfoBox togglePopup={togglePopup} />
       <RectangleBox />
-      {isOpen && <Popup togglePopup={togglePopup} />}
+      {isOpen &&
+        (bonuses && !isBonusLoading ? (
+          <Popup bonusData={bonuses?.data} />
+        ) : (
+          <PopupSkeleton />
+        ))}
     </div>
   );
-  //   <div className="info">
-  //     <div className="info-logo">ЛОГОТИП</div>
-
-  //     <svg
-  //       role="button"
-  //       onClick={togglePopup}
-  //       className="info-button"
-  //       width="24"
-  //       height="24"
-  //       viewBox="0 0 24 24"
-  //       fill="none"
-  //       xmlns="http://www.w3.org/2000/svg"
-  //       aria-label="Кнопка открыть попап"
-  //     >
-  //       <path
-  //         d="M11.9995 0C5.37295 0 0 5.37295 0 11.9995C0 18.626 5.37295 24 11.9995 24C18.626 24 24 18.626 24 11.9995C24 5.37295 18.626 0 11.9995 0ZM14.4975 18.5976C13.8799 18.8414 13.3882 19.0263 13.0194 19.1543C12.6517 19.2823 12.224 19.3463 11.7374 19.3463C10.9897 19.3463 10.4076 19.1634 9.99314 18.7987C9.57867 18.434 9.37245 17.9718 9.37245 17.41C9.37245 17.1916 9.38768 16.9681 9.41816 16.7406C9.44965 16.513 9.49943 16.257 9.56749 15.9695L10.3406 13.2389C10.4086 12.9768 10.4676 12.7279 10.5143 12.4963C10.561 12.2626 10.5834 12.0483 10.5834 11.8532C10.5834 11.5058 10.5112 11.262 10.368 11.1248C10.2227 10.9877 9.94946 10.9206 9.5421 10.9206C9.34298 10.9206 9.13778 10.9501 8.92749 11.0121C8.71924 11.0761 8.53841 11.134 8.3901 11.1909L8.59429 10.3497C9.10019 10.1435 9.58476 9.96673 10.047 9.82045C10.5092 9.67213 10.946 9.59898 11.3575 9.59898C12.1001 9.59898 12.673 9.77981 13.0763 10.1374C13.4776 10.496 13.6797 10.9623 13.6797 11.5352C13.6797 11.6541 13.6655 11.8634 13.6381 12.162C13.6107 12.4617 13.5589 12.735 13.4837 12.9859L12.7147 15.7084C12.6517 15.9269 12.5958 16.1768 12.545 16.4561C12.4952 16.7355 12.4709 16.9488 12.4709 17.0921C12.4709 17.4537 12.5511 17.7006 12.7137 17.8316C12.8742 17.9627 13.1556 18.0287 13.5538 18.0287C13.7417 18.0287 13.952 17.9952 14.1897 17.9302C14.4254 17.8651 14.5961 17.8072 14.7037 17.7575L14.4975 18.5976ZM14.3614 7.54692C14.0028 7.88013 13.571 8.04673 13.0662 8.04673C12.5623 8.04673 12.1275 7.88013 11.7658 7.54692C11.4062 7.21371 11.2244 6.80838 11.2244 6.33498C11.2244 5.8626 11.4072 5.45625 11.7658 5.12C12.1275 4.78273 12.5623 4.61511 13.0662 4.61511C13.571 4.61511 14.0038 4.78273 14.3614 5.12C14.72 5.45625 14.8998 5.8626 14.8998 6.33498C14.8998 6.8094 14.72 7.21371 14.3614 7.54692Z"
-  //         fill="url(#paint0_linear_1_42)"
-  //       />
-  //       <defs>
-  //         <linearGradient
-  //           id="paint0_linear_1_42"
-  //           x1="12"
-  //           y1="0"
-  //           x2="12"
-  //           y2="24"
-  //           gradientUnits="userSpaceOnUse"
-  //         >
-  //           <stop stop-color="#D2333E" />
-  //           <stop offset="1" stop-color="#F54B55" />
-  //         </linearGradient>
-  //       </defs>
-  //     </svg>
-  //   </div>
-
-  //   <div className="rectangle" />
-
-  //   {isOpen && (
-  //     <div className="popup">
-  //       <div className="popup-content">
-  //         <div className="popup-bonus-total">300 бонусов</div>
-  //         <span>29.03 сгорит</span>
-  //         <svg
-  //           className="popup-icon"
-  //           width="13"
-  //           height="17"
-  //           viewBox="0 0 13 17"
-  //           fill="none"
-  //           xmlns="http://www.w3.org/2000/svg"
-  //           aria-label="Иконка бонусов"
-  //         >
-  //           <path
-  //             d="M3.6533 11.4134C2.46742 9.43863 3.13318 5.24933 5.83783 3.80468C6.55744 3.52587 7.14003 2.97078 7.45967 2.25937C7.7793 1.54796 7.81029 0.737409 7.54592 0.00299072C7.54592 0.00299072 9.82304 1.54372 8.73182 5.10783C7.6406 8.67194 9.58585 9.24959 9.58585 9.24959C9.14308 8.67691 8.93882 7.951 9.01684 7.22731C9.07406 6.72254 9.23962 6.23667 9.50185 5.80388C9.76408 5.3711 10.1166 5.0019 10.5346 4.72239C9.72838 7.61169 13.001 9.05211 13.001 12.5001C13.001 15.948 9.3955 17.003 9.3955 17.003C9.39635 16.3675 9.25093 15.7405 8.97081 15.1721C8.69068 14.6037 8.28362 14.1096 7.78208 13.7293C6.07399 12.4768 6.64402 9.54002 6.64402 9.54002C4.4595 12.7662 5.55282 17.004 5.55282 17.004C5.55282 17.004 4.55626 15.608 3.60756 15.4633C2.65885 15.3186 2.13664 13.9701 2.13664 13.9701C2.15057 14.4998 2.29186 15.0181 2.54823 15.4797C2.8046 15.9413 3.16828 16.3323 3.60756 16.6186C-3.74597 13.1517 2.42166 7.99819 2.42166 7.99819C1.70909 10.7396 3.6533 11.4134 3.6533 11.4134Z"
-  //             fill="url(#paint0_linear_1_49)"
-  //           />
-  //           <defs>
-  //             <linearGradient
-  //               id="paint0_linear_1_49"
-  //               x1="6.99978"
-  //               y1="6.00006"
-  //               x2="6.99978"
-  //               y2="17.0001"
-  //               gradientUnits="userSpaceOnUse"
-  //             >
-  //               <stop stop-color="#FFB258" />
-  //               <stop offset="1" stop-color="#C71515" />
-  //             </linearGradient>
-  //           </defs>
-  //         </svg>
-  //         <span>250 бонусов</span>
-  //       </div>
-  //       <svg
-  //         className="popup-button"
-  //         width="35"
-  //         height="35"
-  //         viewBox="0 0 35 35"
-  //         fill="none"
-  //         xmlns="http://www.w3.org/2000/svg"
-  //       >
-  //         <circle cx="17.5" cy="17.5" r="17" stroke="#D4343F" />
-  //         <g clip-path="url(#clip0_1_51)">
-  //           <path
-  //             d="M15.7716 23.1948L21.2284 17.5"
-  //             stroke="#D4343F"
-  //             stroke-linecap="round"
-  //           />
-  //           <path
-  //             d="M15.7716 11.8052L21.2284 17.5"
-  //             stroke="#D4343F"
-  //             stroke-linecap="round"
-  //           />
-  //         </g>
-  //         <defs>
-  //           <clipPath id="clip0_1_51">
-  //             <rect
-  //               width="7"
-  //               height="13"
-  //               fill="white"
-  //               transform="translate(15 11)"
-  //             />
-  //           </clipPath>
-  //         </defs>
-  //       </svg>
-  //     </div>
-  //   )}
-  // </div>
-  //);
 }
 
 export default App;

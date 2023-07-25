@@ -1,0 +1,48 @@
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 22rem;
+  height: 6.5rem;
+  border-radius: 1.25rem;
+  box-shadow: 2px 2px 16px 0px #00000033;
+  transition: all 5s ease-in-out;
+  background-color: #ffffff;
+  display: flex;
+}
+
+.popup-content {
+  width: fill-available;
+  text-align: start;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-evenly;
+  justify-content: space-between;
+  margin: 0 1.25rem;
+}
+
+.popup-button {
+  align-self: center;
+  margin: 0 1.25rem;
+}
+.popup-bonus-total {
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  width: 100%;
+}
+
+span {
+  font-family: Open Sans;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #979797;
+}
+
+.popup-icon {
+  max-width: 0 0.5rem;
+}

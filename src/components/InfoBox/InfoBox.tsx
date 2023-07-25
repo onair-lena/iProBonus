@@ -1,4 +1,5 @@
 import React from 'react';
+import './InfoBox.css';
 
 type TProps = {
   togglePopup: () => void;
@@ -32,8 +33,8 @@ const InfoBox = ({ togglePopup }: TProps) => {
             y2="24"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#D2333E" />
-            <stop offset="1" stop-color="#F54B55" />
+            <stop stopColor="#D2333E" />
+            <stop offset="1" stopColor="#F54B55" />
           </linearGradient>
         </defs>
       </svg>

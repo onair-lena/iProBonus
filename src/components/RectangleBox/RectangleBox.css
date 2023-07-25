@@ -1,0 +1,5 @@
+.rectangle {
+  width: 100%;
+  height: var(--custom-height);
+  background: linear-gradient(to bottom, #d2333e, #f54b55);
+}

@@ -1,15 +1,26 @@
 import React from 'react';
+import './Popup.css';
+import { convertDateStringToCustomFormat } from '../../utils/convertDateStringToCustomFormat';
 
 type TProps = {
-  togglePopup: () => void;
+  bonusData?: {
+    typeBonusName: string;
+    currentQuantity: number;
+    forBurningQuantity: number;
+    dateBurning: string;
+  };
 };
 
-const Popup = ({ togglePopup }: TProps) => {
+const Popup = ({ bonusData }: TProps) => {
   return (
     <div className="popup">
       <div className="popup-content">
-        <div className="popup-bonus-total">300 бонусов</div>
-        <span>29.03 сгорит</span>
+        <div className="popup-bonus-total">{`${
+          bonusData?.currentQuantity || 0
+        } бонусов`}</div>
+        <span>{`${convertDateStringToCustomFormat(
+          bonusData?.dateBurning || ''
+        )} сгорит`}</span>
         <svg
           className="popup-icon"
           width="13"
@@ -32,12 +43,12 @@ const Popup = ({ togglePopup }: TProps) => {
               y2="17.0001"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stop-color="#FFB258" />
-              <stop offset="1" stop-color="#C71515" />
+              <stop stopColor="#FFB258" />
+              <stop offset="1" stopColor="#C71515" />
             </linearGradient>
           </defs>
         </svg>
-        <span>250 бонусов</span>
+        <span>{`${bonusData?.forBurningQuantity || 0} бонусов`}</span>
       </div>
       <svg
         className="popup-button"
